@@ -65,7 +65,6 @@ def earth_function():
                 All = " "
                 title = " "
                 lcd.clear()
-            #print(Country, events)
 
         except IndexError:
             lcd.set_backlight(1)
@@ -76,7 +75,6 @@ def earth_function():
             lcd.message(" -= xxxxxxxx =- ")
             events = 0
             time.sleep(60)
-            Threadmemory = 0            
 try:
     while True:
         len_msg = len(All) - (lcd_columns - 1)
