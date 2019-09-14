@@ -5,16 +5,12 @@ from RPi import GPIO
 import Adafruit_CharLCD as LCD
 import threading
 from quakefeeds import QuakeFeed
+import os
 
 global Threadmemory
-global All
-global title
-global events
-
-events = 0
-title = " "
-All = " "
+global Counter
 Threadmemory = 0
+Counter = 0
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -44,6 +40,9 @@ def earth_function():
     global title
     global events
     global Threadmemory
+    global Counter
+    events = 0
+    x = 0
     Threadmemory = 1
     while Threadmemory == 1:
         try:
@@ -52,18 +51,34 @@ def earth_function():
             All = str(feed.event_title(events))
             All = All[8:]
             x = All.find(",")
-            Country = All[x+1:]
-            if (Country == (" Greece")):
+            Country = str(All[x+1:])
+            if (Country == (" Greece")) :
+                Counter = 1
                 All = All[:x]
                 title = ("M:" + M + " " + Country)
                 events = 0
                 lcd.set_backlight(0)
+                print("M:" + M + " " + Country, All)
+                os.system('mpg321 sound.mp3 &')
                 time.sleep(60)
-            else:
-                lcd.set_backlight(1)
-                events = events + 1
+                os.system('clear')
                 All = " "
                 title = " "
+                lcd.clear()
+                Counter = 0
+                
+            elif (Counter == 0) :
+                print("M:" + M + " " + All)
+                All = " "
+                title = " "
+                lcd.set_backlight(1)
+                events = events + 1
+                lcd.set_cursor(0,0)
+                lcd.message(" -= Search! =- ")
+                lcd.set_cursor(0,1)
+                lcd.message(" -= xXxXxXx =- ")
+                Counter = 0
+                time.sleep(1)
                 lcd.clear()
 
         except IndexError:
@@ -73,16 +88,22 @@ def earth_function():
             lcd.message(" -= Nothing! =- ")
             lcd.set_cursor(0,1)
             lcd.message(" -= xxxxxxxx =- ")
+            All = " "
+            title = " "
             events = 0
-            time.sleep(60)
+            Counter = 0
+            time.sleep(50)
+            os.system('clear')
+
 try:
     while True:
-        len_msg = len(All) - (lcd_columns - 1)
-        for i in range(len_msg):
-            lcd.clear()
-            lcd.message(title + "\n")
-            lcd.message(All[i:i+lcd_columns] + "\n")
-            time.sleep(0.5)
+        while Counter == True  :
+            len_msg = len(All) - (lcd_columns - 1)
+            for i in range(len_msg):
+                lcd.clear()
+                lcd.message(title + "\n")
+                lcd.message(All[i:i+lcd_columns] + "\n")
+                time.sleep(0.5)
         
         if (Threadmemory == 0):
             Threadmemory = 1
@@ -98,4 +119,3 @@ except KeyboardInterrupt:
 finally:
     lcd.clear()
     GPIO.cleanup()
-
