@@ -92,7 +92,11 @@ def earth_function():
             title = " "
             events = 0
             Counter = 0
-            time.sleep(50)
+            time.sleep(60)
+            os.system('clear')
+
+        except:
+            time.sleep(60)
             os.system('clear')
 
 try:
