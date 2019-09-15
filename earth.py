@@ -33,6 +33,7 @@ lcd.show_cursor(False)
 
 lcd.set_backlight(0)
 lcd.clear()
+os.system('clear')
 
 def earth_function():
     lcd.clear()
@@ -58,8 +59,9 @@ def earth_function():
                 title = ("M:" + M + " " + Country)
                 events = 0
                 lcd.set_backlight(0)
+                os.system('mplayer -really-quiet sound.mp3 &')
+                os.system('clear')
                 print("M:" + M + " " + Country, All)
-                os.system('mpg321 sound.mp3 &')
                 time.sleep(60)
                 os.system('clear')
                 All = " "
